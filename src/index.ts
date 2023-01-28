@@ -17,38 +17,28 @@ app.get("/", (req, res) => {
 
 app.get("/api/:q?", (req, res) => {
     const q = req.params.q;
-    if (q) {
-        try {
-            const numForm = parseInt(q);
-            if (!q.includes("-")) {
-                const date = new Date(numForm);
-                const unix = date.valueOf();
-                const utc = date.toUTCString();
+    let date = new Date();
 
+    if (q) {
+        if (isNaN(+q)) {
+            date = new Date(q);
+            if (date.toUTCString() === "Invalid Date") {
                 res.send({
-                    unix,
-                    utc,
+                    error: "Invalid Date",
                 });
             } else {
-                const date = new Date(q);
-                const unix = date.getTime() / 1000;
-                const utc = date.toUTCString();
                 res.send({
-                    unix,
-                    utc,
+                    unix: date.getTime(),
+                    utc: date.toUTCString(),
                 });
             }
-        } catch {
-            res.send({ error: "Invalid Date" });
+        } else {
+            date = new Date(q);
+            res.send({
+                unix: date.getTime(),
+                utc: date.toUTCString(),
+            });
         }
-    } else {
-        const date = new Date();
-        const unix = date.getTime();
-        const utc = date.toUTCString();
-        res.send({
-            unix,
-            utc,
-        });
     }
 });
 
