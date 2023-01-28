@@ -33,12 +33,18 @@ app.get("/api/:q?", (req, res) => {
                 });
             }
         } else {
-            date = new Date(q);
+            date = new Date(parseInt(q));
             res.send({
                 unix: date.getTime(),
                 utc: date.toUTCString(),
             });
         }
+    } else {
+        date = new Date();
+        res.send({
+            unix: date.getTime(),
+            utc: date.toUTCString(),
+        });
     }
 });
 
